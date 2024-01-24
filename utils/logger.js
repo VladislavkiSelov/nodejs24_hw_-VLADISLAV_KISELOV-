@@ -1,8 +1,8 @@
 function logger(value) {
   return {
-    info: (str) => console.log(`${value}: ${str}`),
-    warn: (str) => console.warn(`${value}: ${str}`),
-    error: (str) => console.error(`${value}: ${str}`),
+    info: (...arr) => console.log(`${value}:`, ...arr),
+    warn: (...arr) => console.warn(`${value}:`, ...arr),
+    error: (...arr) => console.error(`${value}:`, ...arr),
   };
 }
 
