@@ -1,26 +1,17 @@
-const colors = require("colors");
-const config = require("config");
-colors.enable();
+const colors = require('colors/safe'); // no need to pollute prototypes
+const config = require('config');
+
 const { logLevel, colorsEnabled } = config;
 
-function loggerInfo(value, ...arr) {
-  const validStr = colorsEnabled ? `${value}:`.bgGreen : `${value}:`;
-  console.log(validStr, ...arr);
-}
-function loggerWarn(value, ...arr) {
-  const validStr = colorsEnabled ? `${value}:`.bgYellow : `${value}:`;
-  console.log(validStr, ...arr);
-}
-function loggerError(value, ...arr) {
-  const validStr = colorsEnabled ? `${value}:`.bgRed : `${value}:`;
-  console.log(validStr, ...arr);
-}
-
 function logger(value) {
+  if (!colorsEnabled) {
+    colors.disable(); // it is ON by default, so we switch it OFF when need
+  }
+
   return {
-    info: logLevel === "info" ? (...arr) => loggerInfo(value, ...arr) : () => {},
-    warn: logLevel === "warn" || logLevel === "info" ? (...arr) => loggerWarn(value, ...arr) : () => {},
-    error: logLevel === "error" || logLevel === "info" || logLevel === "warn" ? (...arr) => loggerError(value, ...arr) : () => {},
+    info: (...arr) => console.log(colors.bgGreen(`${value}:`), ...arr),
+    warn: (...arr) => console.warn(colors.bgYellow(`${value}:`), ...arr),
+    error: (...arr) => console.error(colors.bgRed(`${value}:`), ...arr)
   };
 }
 
