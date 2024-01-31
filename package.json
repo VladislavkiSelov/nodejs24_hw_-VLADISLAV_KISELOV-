@@ -1,0 +1,21 @@
+{
+  "name": "nodejs24_hw_-vladislav_kiselov-",
+  "version": "1.0.0",
+  "description": "description",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon main.js",
+    "debug": "node --inspect-brk ./main.js"
+  },
+  "author": "VladislavkiSelov",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "config": "^3.3.10",
+    "dotenv": "^16.4.1"
+  }
+}
