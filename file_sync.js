@@ -1,8 +1,6 @@
-module.exports = fileSync;
-
 const fsAsync = require("fs/promises");
 const path = require("path");
-const logger = require("./utils/logger")("main");
+const logger = require("./utils/logger")("file sync");
 
 function fileSync() {
   return {
@@ -25,27 +23,34 @@ function fileSync() {
           const checkExistenceFile = filesTarget.find((targetFile) => targetFile.name === file.name);
           //проверка папка или нет, и проверка есть ли во втрой папке такие же файлы как в первой
 
-          if (isDirectory.isDirectory() && !checkExistenceFile) {
+          if (isDirectory.isDirectory()) {
             try {
-              await fsAsync.mkdir(targetPath);
-              await recutionCopyFile(sourcePath, targetPath);
+              if (checkExistenceFile) {
+                await recutionCopyFile(sourcePath, targetPath);
+              } else {
+                await fsAsync.mkdir(targetPath);
+                await recutionCopyFile(sourcePath, targetPath);
+              }
             } catch (err) {
-              logger.error("помилка створення папки");
+              logger.error("помилка створення папки", file.name);
             }
             //если нет создаем папку в target и перебираем эту папку запускаем рекурсию
           } else if (!checkExistenceFile) {
             try {
               await fsAsync.writeFile(targetPath, "");
-              logger.info("файл скопійовано");
+              logger.info(`файл ${file.name} скопійовано`);
               //просто копируем файлы
             } catch (err) {
-              logger.error("помилка створення файлу");
+              logger.error("помилка створення файлу", file.name);
             }
           }
-          logger.warn(" файл із source вже є в target");
+          logger.warn(`файл із source ${file.name} вже є в target`);
         }
       }
-      recutionCopyFile(sourceFolder, targetFolder)
+
+      recutionCopyFile(sourceFolder, targetFolder);
     },
   };
 }
+
+module.exports = fileSync;
