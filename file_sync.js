@@ -18,25 +18,24 @@ const fileSync = {
         const targetPath = path.join(target, file.name);
         //перебераю папку с которой нужно скопировать и (создаю,получаю) пути
 
-        const isDirectory = await fsAsync.stat(sourcePath);
-        const checkExistenceFile = filesTarget.find((targetFile) => targetFile.name === file.name);
+        const fileStats = await fsAsync.stat(sourcePath);
+        const isFileExists = !!filesTarget.find((targetFile) => targetFile.name === file.name); // додав !! на початку щоб отримати boolean
         //проверка папка или нет, и проверка есть ли во втрой папке такие же файлы как в первой
 
-        if (isDirectory.isDirectory()) {
+        if (fileStats.isDirectory()) {
           try {
-            if (checkExistenceFile) {
-              await recutionCopyFile(sourcePath, targetPath);
-            } else {
+            if (!isFileExists) {
               await fsAsync.mkdir(targetPath);
-              await recutionCopyFile(sourcePath, targetPath);
             }
+            await recutionCopyFile(sourcePath, targetPath);
           } catch (err) {
             logger.error('помилка створення папки', file.name);
           }
           //если нет создаем папку в target и перебираем эту папку запускаем рекурсию
-        } else if (!checkExistenceFile) {
+        } else if (!isFileExists) {
           try {
-            await fsAsync.writeFile(targetPath, '');
+            // await fsAsync.writeFile(targetPath, ''); //! некоректно. ти не копіюєш файл із source, а створюєш новий з таким іменем, але ПУСТИЙ ))
+            await fsAsync.copyFile(sourcePath, targetPath);
             logger.info(`файл ${file.name} скопійовано`);
             //просто копируем файлы
           } catch (err) {
