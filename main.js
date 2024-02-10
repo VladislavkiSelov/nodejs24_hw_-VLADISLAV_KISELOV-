@@ -1,6 +1,10 @@
 require("dotenv").config();
 
-const logger = require("./utils/logger")("main");
+const loggerFile = require("./utils/logger");
+
+const { createLogger, writeStreamInfo, writeStreamError } = loggerFile;
+
+const logger = createLogger("main");
 
 logger.info("the script is running!");
 
@@ -10,6 +14,11 @@ const error = new Error("Good to be bad", { cause: "love to break things" });
 
 logger.error("Houston, we have a problem`", error);
 
-const fileSync = require('./file_sync');
+const fileSync = require("./file_sync");
 
 fileSync.start();
+
+process.on("beforeExit", () => {
+  writeStreamInfo.end();
+  writeStreamError.end();
+});
