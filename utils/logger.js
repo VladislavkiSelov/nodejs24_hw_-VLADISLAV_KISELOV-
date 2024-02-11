@@ -12,21 +12,19 @@ function checkFilesLogs() {
     const fileLogs = fs.readdirSync(".");
     if (!fileLogs.includes("logs")) {
       fs.mkdirSync(path.join(".", "logs"));
-      fs.writeFileSync(path.join(".", "logs", "info.log"), "");
-      fs.writeFileSync(path.join(".", "logs", "errors.log"), "");
     }
   } catch (err) {
-    console.error(err);
+    console.error("create logs", err);
   }
 }
 
 checkFilesLogs();
 
-const writeStreamInfo = fs.createWriteStream(path.join(".", "logs", "info.log"), { encoding: "utf-8", highWaterMark: 1024 });
-const writeStreamError = fs.createWriteStream(path.join(".", "logs", "errors.log"), { encoding: "utf-8", highWaterMark: 1024 });
+const writeStreamInfo = fs.createWriteStream(path.join(".", "logs", "info.log"), { encoding: "utf-8", highWaterMark: 1024, flags: "a" });
+const writeStreamError = fs.createWriteStream(path.join(".", "logs", "errors.log"), { encoding: "utf-8", highWaterMark: 1024, flags: "a" });
 
-function createLogger(value) {
-  const date = moment(new Date()).format("YY.MM.DD");
+function logger(value) {
+  const date = moment(new Date()).format("HH:mm / YY.MM.DD -");
 
   if (!colorsEnabled) {
     colors.disable(); // it is ON by default, so we switch it OFF when need
@@ -62,4 +60,9 @@ function createLogger(value) {
   };
 }
 
-module.exports = { createLogger, writeStreamInfo, writeStreamError };
+process.on("beforeExit", () => {
+  writeStreamInfo.end();
+  writeStreamError.end();
+});
+
+module.exports = logger;

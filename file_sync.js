@@ -1,8 +1,6 @@
 const fsAsync = require("fs/promises");
 const path = require("path");
-const loggerFile = require("./utils/logger");
-const { createLogger } = loggerFile;
-const logger = createLogger("file sync");
+const logger = require("./utils/logger")("file sync");
 
 const fileSync = {
   start: async () => {
