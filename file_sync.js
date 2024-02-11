@@ -1,11 +1,11 @@
-const fsAsync = require('fs/promises');
-const path = require('path');
-const logger = require('./utils/logger')('file sync');
+const fsAsync = require("fs/promises");
+const path = require("path");
+const logger = require("./utils/logger")("file sync");
 
 const fileSync = {
   start: async () => {
-    const sourceFolder = path.join('.', 'source');
-    const targetFolder = path.join('.', 'target');
+    const sourceFolder = path.join(".", "source");
+    const targetFolder = path.join(".", "target");
     //пути к катологам
 
     async function recutionCopyFile(source, target) {
@@ -29,7 +29,7 @@ const fileSync = {
             }
             await recutionCopyFile(sourcePath, targetPath);
           } catch (err) {
-            logger.error('помилка створення папки', file.name);
+            logger.error("помилка створення папки", file.name);
           }
           //если нет создаем папку в target и перебираем эту папку запускаем рекурсию
         } else if (!isFileExists) {
@@ -39,7 +39,7 @@ const fileSync = {
             logger.info(`файл ${file.name} скопійовано`);
             //просто копируем файлы
           } catch (err) {
-            logger.error('помилка створення файлу', file.name);
+            logger.error("помилка створення файлу", file.name);
           }
         }
         logger.warn(`файл із source ${file.name} вже є в target`);
