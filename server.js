@@ -13,7 +13,6 @@ server.on("listening", () => console.log(`server start port-[${port}]`));
 server.on("request", (req, res) => {
   if (req.url !== `/healthcheck`) {
     res.writeHead(404, `Not Found`);
-    res.status(404).end(`Not Found`);
     logger.warn(`${req.method}${req.url}404`);
     res.end();
     return;
