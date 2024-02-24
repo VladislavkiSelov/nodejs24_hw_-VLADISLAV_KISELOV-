@@ -1,6 +1,1 @@
-{
-  "data": [
-    { "username": "John Smith", "email": "johnsmith32@server.com" },
-    { "username": "Mike Smith", "email": "mikesmith32@server.com" }
-  ]
-}
+{"data":[{"username":"John Smith","email":"johnsmith32@server.com"},{"username":"Mike Smith","email":"mikesmith32@server.com"},{"username":"Angela Smith","email":"angelasmith32@server.com"}]}
