@@ -2,17 +2,23 @@ const router = require("express").Router();
 const fs = require("fs");
 const path = require("path");
 const { validateUserData, validateUserId, validateUserDelete, routerUserError } = require("../middleware/middlewareUsers");
-let data = JSON.parse(fs.readFileSync(path.join(".", "usersJson.json"), "utf8"));
+
+/** @type { { data: { username: string, email: string, id: numer }[] } } */
+let userDb = JSON.parse(fs.readFileSync(path.join(".", "usersJson.json"), "utf8"));
 
 function createUser(req, res) {
-  newData = { data: [...data.data, req.body] };
-  data = newData;
+  const newUser = {
+    ...req.body,
+    id: Date.now()
+  };
 
-  res.send(201, req.body);
+  userDb.data.push(newUser);
+
+  res.send(201, newUser); //! повертаємо дані збереженого юзера, разом з його айді
 }
 
 function giveUserId(req, res) {
-  const user = data.data.find((el, i) => i === +req.params.userId);
+  const user = userDb.data.find((user) => user.id === +req.params.userId);
 
   if (!user) {
     req.status = 404;
@@ -23,20 +29,22 @@ function giveUserId(req, res) {
 }
 
 function userDelete(req, res) {
-  const userId = req.params.userId;
-  if (+userId in data.data) {
-    const users = data.data.filter((el, i) => i !== +userId);
-    data = { data: users };
+  const userId = userDb.data.findIndex((user) => user.id === +req.params.userId)
+
+  if (userId >= 0) {
+    userDb.data.splice(userId, 1);
+    res.send(204);
   } else {
     req.status = 404;
     throw new Error(`User with ID "${userId}" not found`);
   }
 
-  res.send(204);
 }
 
 router.get("/", (req, res) => {
-  res.send(200, data);
+  // давай будемо однотипними - якщо на getUserById повертаємо просто об'єкт юзера без враппера { data: ...},
+  // то давай і тут так само
+  res.send(200, userDb.data);
 });
 
 router.post("/", validateUserData, createUser);
@@ -48,7 +56,7 @@ router.delete("/:userId", validateUserDelete, userDelete);
 router.use(routerUserError);
 
 process.on("SIGINT", () => {
-  fs.writeFileSync(path.join(".", "usersJson.json"), JSON.stringify(data));
+  fs.writeFileSync(path.join(".", "usersJson.json"), JSON.stringify(userDb));
 });
 
 module.exports = {
