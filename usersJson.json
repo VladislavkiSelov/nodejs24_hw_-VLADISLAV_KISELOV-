@@ -1,0 +1,6 @@
+{
+  "data": [
+    { "username": "John Smith", "email": "johnsmith32@server.com" },
+    { "username": "Mike Smith", "email": "mikesmith32@server.com" }
+  ]
+}
