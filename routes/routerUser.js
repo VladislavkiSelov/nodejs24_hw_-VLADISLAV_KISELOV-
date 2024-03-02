@@ -14,15 +14,15 @@ const knexLib = require("knex");
 const knexConfig = require("../knexfile");
 const knex = knexLib(knexConfig);
 
-async function giveCreateUser(req, res) {
+function giveCreateUser(req, res) {
   res.send(201, req.newUser);
 }
 
-async function giveUserId(req, res) {
+function giveUserId(req, res) {
   res.send(200, req.user);
 }
 
-async function giveStatusUserDelete(req, res) {
+function giveStatusUserDelete(req, res) {
   res.send(204);
 }
 
