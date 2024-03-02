@@ -2,7 +2,7 @@ const knexLib = require("knex");
 const knexConfig = require("../knexfile");
 const knex = knexLib(knexConfig);
 
-async function getAllUsers(req, res) {
+async function getAllUsers(req, res, next) {
   try {
     const allUsers = await knex.select().from("users");
     req._data = allUsers;
@@ -22,10 +22,10 @@ async function createUser(req, res, next) {
   }
 }
 
-async function seachUserId(req, res, next) {
-  const user = await knex.select().from("users").where({ id: req.params.userId });
+async function searchUserId(req, res, next) {
+  const user = await knex.select().from("users").where({ id: req.params.userId }).first();
   try {
-    if (user.length === 0) {
+    if (!user) {
       req.status = 404;
       throw new Error(`User with ID "${req.params.userId}" not found`);
     } else {
@@ -55,6 +55,6 @@ async function userDelete(req, res, next) {
 module.exports = {
   getAllUsers,
   createUser,
-  seachUserId,
+  searchUserId,
   userDelete,
 };

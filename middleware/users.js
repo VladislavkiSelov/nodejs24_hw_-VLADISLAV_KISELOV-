@@ -31,5 +31,4 @@ async function validateUserId(req, res, next) {
 module.exports = {
   validateUserData,
   validateUserId,
-  routerUserError,
 };

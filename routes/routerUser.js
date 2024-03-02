@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 const { validateUserData, validateUserId } = require("../middleware/users");
-const { createUser, seachUserId, userDelete, getAllUsers } = require("../service/users");
+const { createUser, searchUserId, userDelete, getAllUsers } = require("../service/users");
 
 
 function responsSuccessStatusOnly(req, res) {
@@ -20,7 +20,7 @@ router.get("/", getAllUsers, respondSuccessWithData());
 
 router.post("/", validateUserData, createUser, respondSuccessWithData(201));
 
-router.get("/:userId", validateUserId, seachUserId, respondSuccessWithData());
+router.get("/:userId", validateUserId, searchUserId, respondSuccessWithData());
 
 router.delete("/:userId", validateUserId, userDelete, responsSuccessStatusOnly);
 
