@@ -1,41 +1,28 @@
 const router = require("express").Router();
 
-const {
-  validateUserData,
-  createUser,
-  validateUserId,
-  seachUserId,
-  validateUserDelete,
-  userDelete,
-  routerUserError,
-} = require("../middleware/middlewareUsers");
+const { validateUserData, validateUserId } = require("../middleware/users");
+const { createUser, seachUserId, userDelete, getAllUsers } = require("../service/users");
 
-const knexLib = require("knex");
-const knexConfig = require("../knexfile");
-const knex = knexLib(knexConfig);
 
-function giveCreateUser(req, res) {
-  res.send(201, req.newUser);
-}
-
-function giveUserId(req, res) {
-  res.send(200, req.user);
-}
-
-function giveStatusUserDelete(req, res) {
+function responsSuccessStatusOnly(req, res) {
   res.send(204);
 }
 
-router.get("/", async (req, res) => {
-  const allUsers = await knex.select().from("users");
-  res.send(200, allUsers);
-});
+function respondSuccessWithData(status = 200) {
+  return (req, res) => res.send(status, req._data);
+}
 
-router.post("/", validateUserData, createUser, giveCreateUser);
+function routerUserError(err, req, res, next) {
+  res.status(req.status || 400).send({ error: err.message });
+}
 
-router.get("/:userId", validateUserId, seachUserId, giveUserId);
+router.get("/", getAllUsers, respondSuccessWithData());
 
-router.delete("/:userId", validateUserDelete, userDelete, giveStatusUserDelete);
+router.post("/", validateUserData, createUser, respondSuccessWithData(201));
+
+router.get("/:userId", validateUserId, seachUserId, respondSuccessWithData());
+
+router.delete("/:userId", validateUserId, userDelete, responsSuccessStatusOnly);
 
 router.use(routerUserError);
 
