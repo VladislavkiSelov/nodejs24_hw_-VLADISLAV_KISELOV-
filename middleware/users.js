@@ -28,26 +28,7 @@ async function validateUserId(req, res, next) {
   }
 }
 
-async function validateUserDelete(req, res, next) {
-  const userSchema = yup.object({
-    userId: yup.number().positive().min(0),
-  });
-
-  try {
-    await userSchema.validate(req.params);
-    next();
-  } catch (err) {
-    next(err);
-  }
-}
-
-function routerUserError(err, req, res, next) {
-    res.status(req.status || 400).send({ error: err.message });
-  }
-
 module.exports = {
   validateUserData,
   validateUserId,
-  validateUserDelete,
-  routerUserError
 };
